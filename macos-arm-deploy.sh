@@ -1,8 +1,10 @@
-FUNCTION_NAME='dart-runtime-test'
+FUNCTION_NAME='dart-runtime-arm64'
 IAM_ROLE_LAMBDA_POLICY='arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
 IAM_ROLE_TRUSTED_POLICY='iam-trusted-policy.json'
 FUNCTION_HANDLER='hello.method'
-DOCKER_IMAGE_NAME='dart-lambda-builder'
+
+DOCKER_IMAGE_NAME='dart-lambda-builder-arm64'
+DOCKERFILE_NAME='macos-arm-dockerfile'
 
 # Cleaning up Docker container
 CONTAINER_ID=$(docker ps -all --filter ancestor=${DOCKER_IMAGE_NAME} --latest --format '{{.ID}}')
@@ -18,7 +20,7 @@ else
 fi
 
 echo "Building Docker Image..."
-docker build . -t ${DOCKER_IMAGE_NAME} -f ./dockerfile
+docker build . -t ${DOCKER_IMAGE_NAME} -f ./${DOCKERFILE_NAME}
 echo "Running Docker Container..."
 docker run -d ${DOCKER_IMAGE_NAME}
 
@@ -31,7 +33,7 @@ echo "Packaging for deployment..."
 rm lambda.zip
 zip lambda.zip bootstrap
 
-echo "Determing Lambda Status..."
+echo "Determining Lambda Status..."
 DEPLOYED_LAMBDA="$(aws lambda get-function --function-name $FUNCTION_NAME --query 'Configuration.FunctionName')"
 
 if [ -z $DEPLOYED_LAMBDA ]
