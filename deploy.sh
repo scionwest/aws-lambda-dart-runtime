@@ -5,9 +5,9 @@ FUNCTION_HANDLER='hello.method'
 DOCKER_IMAGE_NAME='dart-lambda-builder'
 
 # Cleaning up Docker container
-CONTAINER_ID="$(docker ps -all --filter ancestor=${DOCKER_IMAGENAME} --format '{{.ID}}')"
+CONTAINER_ID=$(docker ps -all --filter ancestor=${DOCKER_IMAGE_NAME} --format '{{.ID}}')
 
-if [ -z "$CONTAINER_ID" ]
+if [ -z $CONTAINER_ID ]
 then
     echo "No existing Docker containers to clean up."
 else
@@ -48,11 +48,17 @@ then
         --no-cli-pager
 
     DEPLOYED_IAM_ROLE_NAME=$(aws iam get-role --role-name ${FUNCTION_NAME}-role --query 'Role.Arn')
+    
+    # Clean up the variable value so it doesn't contain quotes.
     DEPLOYED_IAM_ROLE_NAME="${DEPLOYED_IAM_ROLE_NAME%\"}"
     DEPLOYED_IAM_ROLE_NAME="${DEPLOYED_IAM_ROLE_NAME#\"}"
     echo Role created: ${DEPLOYED_IAM_ROLE_NAME}
     
     echo "Deploying new ${FUNCTION_NAME} function..."
+    # We need to provide the IAM Role time to establish the Trust relationship policy when just attached.
+    # Deploying the Lambda function to quickly afterwards can sometimes fail due to the IAM Role not meeting
+    # the required Lambda Trust policy.
+    sleep 10
     aws lambda create-function \
         --function-name $FUNCTION_NAME \
         --handler $FUNCTION_HANDLER \
