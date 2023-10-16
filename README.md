@@ -25,4 +25,7 @@ To solve for this, this repository provides a Dockerfile that creates a Linux im
 - Attaches the Basic Lambda Execution policy
 - Deploys the AWS Lambda
 
-You can run the same `deploy.sh` script a 2nd time to re-compile changes to the `api.dart` source code and have those changes re-deployed into AWS.
+You can run the same `deploy.sh` script a 2nd time to re-compile changes to the `api.dart` source code and have those changes re-deployed into AWS. Each time the script is created, the Docker image is rebuilt and a new Container is started. The previous Container is removed. If the script ever failed during the cleanup then you could end up with orphaned Containers that will need to be manually cleaned up. Only the latest container created is auto-removed.
+
+**NOTE**: In some instances the IAM Role doesn't get the Trust Policy attached quickly enough on the AWS end. This causes the initial Lambda creation to fail. You can run the `deploy.sh` script a 2nd time and it will complete the deployment. Running the script anytime after the successful function deployment will run the updates without issue.
+

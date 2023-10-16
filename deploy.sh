@@ -5,7 +5,7 @@ FUNCTION_HANDLER='hello.method'
 DOCKER_IMAGE_NAME='dart-lambda-builder'
 
 # Cleaning up Docker container
-CONTAINER_ID=$(docker ps -all --filter ancestor=${DOCKER_IMAGE_NAME} --format '{{.ID}}')
+CONTAINER_ID=$(docker ps -all --filter ancestor=${DOCKER_IMAGE_NAME} --latest --format '{{.ID}}')
 
 if [ -z $CONTAINER_ID ]
 then
