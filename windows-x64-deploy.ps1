@@ -10,6 +10,10 @@ function Get-ContainerId {
     return $(docker ps --all --filter ancestor=$DOCKER_IMAGE_NAME --latest --format '{{.ID}}')
 }
 
+function Get-Function {
+    return $(aws lambda get-function --function-name $FUNCTION_NAME --query 'Configuration.FunctionName')
+}
+
 # Get the last container created for our Image and remove it.
 $CONTAINER_ID=Get-ContainerId
 
@@ -43,4 +47,10 @@ if ((Test-Path .\lambda.zip)) {
 Compress-Archive -Path .\bootstrap .\lambda.zip
 
 Write-Output "Determining Lambda Status..."
-# TODO: Determine if IAM and Function exist. Create if not. Update Function if yes.
+$DEPLOYED_LAMBDA=Get-Function
+
+if ([string]::IsNullOrEmpty($DEPLOYED_LAMBDA)) {
+    Write-Output "Lambda doesn't exist - processing a fresh deployment."
+    Write-Output "Creating Lambda IAM Role..."
+    
+}
