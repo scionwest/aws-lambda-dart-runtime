@@ -14,6 +14,10 @@ function Get-Function {
     return $(aws lambda get-function --function-name $FUNCTION_NAME --query 'Configuration.FunctionName')
 }
 
+function Get-Deployed-IAM-Role {
+    return $(aws iam get-role --role-name $FUNCTION_NAME-role --query 'Role.Arn')
+}
+
 # Get the last container created for our Image and remove it.
 $CONTAINER_ID=Get-ContainerId
 
@@ -53,4 +57,19 @@ if ([string]::IsNullOrEmpty($DEPLOYED_LAMBDA)) {
     Write-Output "Lambda doesn't exist - processing a fresh deployment."
     Write-Output "Creating Lambda IAM Role..."
     
+    aws iam create-role `
+        --role-name $FUNCTION_NAME-role `
+        --assume-role-policy-document file://$IAM_ROLE_TRUSTED_POLICY `
+        --no-cli-pager
+
+    aws iam attach-role-policy `
+        --role-name $FUNCTION_NAME-role `
+        --policy-arn $IAM_ROLE_LAMBDA_POLICY `
+        --no-cli-pager
+
+    $DEPLOYED_IAM_ROLE_NAME=Get-Deployed-IAM-Role
+
+    # Clean up the variable value so it doesn't contain qoutes.
+    $DEPLOYED_IAM_ROLE_NAME = $DEPLOYED_IAM_ROLE_NAME.replace('"','')
+    Write-Output $DEPLOYED_IAM_ROLE_NAME
 }
