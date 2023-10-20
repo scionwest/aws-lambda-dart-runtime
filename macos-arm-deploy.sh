@@ -20,7 +20,7 @@ else
 fi
 
 echo "Building Docker Image..."
-docker build . -t ${DOCKER_IMAGE_NAME} -f ./${DOCKERFILE_NAME}
+docker build . -t ${DOCKER_IMAGE_NAME} -f ./${DOCKERFILE_NAME} --build-arg arm64v8/dart
 echo "Running Docker Container..."
 docker run -d ${DOCKER_IMAGE_NAME}
 
