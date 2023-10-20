@@ -5,6 +5,7 @@ FUNCTION_HANDLER='hello.method'
 
 DOCKER_IMAGE_NAME='dart-lambda-builder-arm64'
 DOCKERFILE_NAME='macos-arm-dockerfile'
+DART_IMAGE='arm64v8/dart'
 
 # Cleaning up Docker container
 CONTAINER_ID=$(docker ps -all --filter ancestor=${DOCKER_IMAGE_NAME} --latest --format '{{.ID}}')
@@ -20,7 +21,7 @@ else
 fi
 
 echo "Building Docker Image..."
-docker build . -t ${DOCKER_IMAGE_NAME} -f ./${DOCKERFILE_NAME} --build-arg arm64v8/dart
+docker build . -t ${DOCKER_IMAGE_NAME} -f ./${DOCKERFILE_NAME} --build-arg ${DART_IMAGE}
 echo "Running Docker Container..."
 docker run -d ${DOCKER_IMAGE_NAME}
 
