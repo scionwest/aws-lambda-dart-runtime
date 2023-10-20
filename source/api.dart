@@ -18,7 +18,7 @@ void main() async {
 }
 
 Future<AwsApiGatewayResponse> helloWorldHandler(Context context, AwsApiGatewayEvent event) async {
-  final response = {'message': 'hello ${context.requestId} from a method compiled in Docker!'};
+  final response = {'message': 'hello ${context.requestId} from a method compiled in Docker!!!'};
 
   /// it returns an response to the gateway
   final jsonResponse = AwsApiGatewayResponse.fromJson(response);
