@@ -1,4 +1,6 @@
-FROM dart:latest as build
+ARG IMAGE=dart
+
+FROM ${IMAGE}:latest as build
 
 WORKDIR /
 
