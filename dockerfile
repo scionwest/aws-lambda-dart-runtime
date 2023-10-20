@@ -1,4 +1,6 @@
-FROM arm64v8/dart:latest as build
+ARG IMAGE=dart
+
+FROM ${IMAGE}:latest as build
 
 WORKDIR /
 
