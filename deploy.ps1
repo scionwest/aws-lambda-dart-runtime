@@ -5,6 +5,7 @@ $FUNCTION_HANDLER='hello.method'
 
 $DOCKER_IMAGE_NAME='dart-lambda-builder-x64'
 $DOCKERFILE_NAME='dockerfile'
+$DART_IMAGE='dart'
 
 function Get-ContainerId {
     return $(docker ps --all --filter ancestor=${DOCKER_IMAGE_NAME} --latest --format '{{.ID}}')
@@ -27,7 +28,7 @@ if ([string]::IsNullOrEmpty(${CONTAINER_ID})) {
 }
 
 Write-Output "Building Docker Image..."
-docker build . -t ${DOCKER_IMAGE_NAME} -f ${DOCKERFILE_NAME} --build-arg dart
+docker build . -t ${DOCKER_IMAGE_NAME} -f ${DOCKERFILE_NAME} --build-arg ${DART_IMAGE}
 Write-Output "Running Docker Container..."
 docker run -d ${DOCKER_IMAGE_NAME}
 
